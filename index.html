@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Interactivo de Kevin Fabricio Ludeña Calderón</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gradient-start: #4a00e0;
+            --gradient-end: #8e2de2;
+            --text-color: #333;
+            --background-color: #f4f4f4;
+            --card-bg: #ffffff;
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin-bottom: 20px;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .contact-info {
+            color: #e0e0e0;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .category {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .category-image-container {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .category-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .category:hover .category-image {
+            transform: scale(1.1);
+        }
+
+        .category-title {
+            padding: 20px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bg-pink { background-color: #FFB6C1; }
+        .bg-blue { background-color: #87CEFA; }
+        .bg-green { background-color: #98FB98; }
+        .bg-purple { background-color: #DDA0DD; }
+        .bg-yellow { background-color: #FFFACD; }
+        .bg-orange { background-color: #FFA07A; }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        #content-area {
+            margin-top: 60px;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        #content-area.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: fall 1s ease-in-out forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        #chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        #chat-input {
+            display: flex;
+            padding: 10px;
+        }
+
+        #chat-input input {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #chat-input button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 40px 0;
+            }
+
+            .profile-pic {
+                width: 150px;
+                height: 150px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            #chat-widget {
+                width: 100%;
+                height: 50vh;
+                bottom: 0;
+                right: 0;
+                border-radius: 10px 10px 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\placeholder\180\Perfil Fabricio.jpg" alt="Kevin Fabricio Ludeña Calderón" class="profile-pic">
+        <h1>Kevin Fabricio Ludeña Calderón</h1>
+        <p class="contact-info">Surquillo, Lima, Perú | fabriciokevin2016@hotmail.com | +51 921209325</p>
+    </header>
+
+    <div class="container">
+        <div class="categories">
+            <div class="category" data-category="profile">
+                <div class="category-image-container">
+                    <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\Perfil2.png" alt="Perfil" class="category-image">
+                </div>
+                <div class="category-title bg-pink">Perfil</div>
+            </div>
+            <div class="category" data-category="experience">
+                <div class="category-image-container">
+                    <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\experience.jpg" alt="Experiencia" class="category-image">
+                </div>
+                <div class="category-title bg-blue">Experiencia</div>
+            </div>
+            <div class="category" data-category="skills">
+                <div class="category-image-container">
+                    <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\Habilidades.png" alt="Habilidades" class="category-image">
+                </div>
+                <div class="category-title bg-green">Habilidades</div>
+            </div>
+            <div class="category" data-category="projects">
+                <div class="category-image-container">
+                    <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\profile.jpg" alt="Proyectos Publicitarios" class="category-image">
+                </div>
+                <div class="category-title bg-purple">Proyectos Publicitarios</div>
+            </div>
+            <div class="category" data-category="packaging">
+                <div class="category-image-container">
+                    <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\packaging.png"class="category-image">
+                </div>
+                <div class="category-title bg-yellow">Desarrollo de packaging</div>
+            </div>
+            <div class="category" data-category="networking">
+                <div class="category-image-container">
+                    <img src="C:\Users\USUARIO\Documents\CV FABRICIO KEVIN\api\networking.jpg" alt="Networking con Influencers" class="category-image">
+                </div>
+                <div class="category-title bg-orange">Networking con Influencers</div>
+            </div>
+        </div>
+
+        <div id="content-area"></div>
+
+        <div class="buttons">
+            <button class="btn" id="downloadCV">Descargar CV</button>
+            <button class="btn" id="contactMe">Contactarme</button>
+        </div>
+    </div>
+
+    <div id="chat-widget">
+        <div id="chat-header">Chat con Kevin</div>
+        <div id="chat-messages"></div>
+        <div id="chat-input">
+            <input type="text" placeholder="Escribe un mensaje...">
+            <button>Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const categories = document.querySelectorAll('.category');
+            const contentArea = document.getElementById('content-area');
+            const downloadBtn = document.getElementById('downloadCV');
+            const contactBtn = document.getElementById('contactMe');
+            const chatWidget = document.getElementById('chat-widget');
+            const chatHeader = document.getElementById('chat-header');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input').querySelector('input');
+            const chatSendBtn = document.getElementById('chat-input').querySelector('button');
+
+            const categoryContent = {
+    profile: "Consultor creativo, publicista Jr. y especialista en marketing digital con experiencia en la creación de estrategias efectivas y contenido visual. Habilidad para trabajar en diversas áreas del diseño y la producción, con un enfoque en resultados medibles.",
+    experience: "• Consultor Creativo y Especialista en Marketing Digital en Empresa Innovadora (Enero 2020 - Presente)<br>- Desarrollo de estrategias de marketing digital que aumentaron la visibilidad de marca en un 30%<br>- Creación de afiches publicitarios valorados en 20 mil soles<br>- Diseño de nuevos empaques para productos principales, mejorando la percepción de marca<br>- Gestión de campañas de contenido en redes sociales, aumentando la interacción en un 40%<br>- Networking con influencers y celebridades, ampliando el alcance de marca significativamente<br>- Colaboración en equipos multidisciplinarios para proyectos que integran diseño y tecnología",
+    skills: "• Software: Adobe Creative Suite, Figma, DaVinci Resolve, Adobe Premiere<br>• Marketing Digital: Google Analyt0ics, SEMrush<br>• Gestión de Proyectos: Trello, Asana<br>• Especialidades: Diseño de Empaques, Gestión de Influencers, Estrategia de Contenidos, Publicidad Digital<br>• Habilidades blandas: Creatividad, Innovación, Trabajo en equipo, Comunicación efectiva",
+    projects: "• Visibilidad de Marca: Incremento del 30% a través de estrategias creativas de marketing digital<br>• Publicidad de Alto Impacto: Desarrollo de publicidad para la CAMPAÑA PLAN BROWNIES mejorando la percepción de marca",
+    packaging: "• Rediseño de empaques para productos principales<br>- Mejora significativa en la percepción de marca<br>- Implementación de diseños innovadores y atractivos<br><br>• Proyectos Futuros:<br>- Desarrollar una línea de productos con empaques eco-amigables, alineados con la sostenibilidad",
+    networking: "• Colaboración con influencers y celebridades<br>- Ampliación significativa del alcance de marca<br>- Establecimiento de relaciones estratégicas en la industria<br><br>• Proyectos Futuros:<br>- Expandir la red de influencers para alcanzar nuevos mercados y demografías<br>- Organizar un evento anual de networking para profesionales del marketing y diseño en Lima"
+};
+
+categories.forEach(category => {
+    category.addEventListener('click', () => {
+        const categoryType = category.getAttribute('data-category');
+        contentArea.innerHTML = `<h2>${category.querySelector('.category-title').textContent}</h2><p>${categoryContent[categoryType]}</p>`;
+        contentArea.classList.add('visible');
+    });
+});
+
+downloadBtn.addEventListener('click', () => {
+    alert('¡Gracias por tu interés! El CV se descargará pronto.');
+});
+
+contactBtn.addEventListener('click', () => {
+    window.location.href = 'mailto:fabriciokevin2016@hotmail.com';
+});
+
+let isChatOpen = true;
+
+chatHeader.addEventListener('click', () => {
+    isChatOpen = !isChatOpen;
+    chatWidget.style.height = isChatOpen ? '400px' : '40px';
+});
+
+chatSendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+function sendMessage() {
+    const message = chatInput.value.trim();
+    if (message) {
+        appendMessage('Tú', message);
+        chatInput.value = '';
+        setTimeout(() => {
+            const botResponse = getBotResponse(message);
+            appendMessage('Kevin', botResponse);
+        }, 1000);
+    }
+}
+
+function appendMessage(sender, text) {
+    const messageElement = document.createElement('div');
+    messageElement.innerHTML = `<strong>${sender}:</strong> ${text}`;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getBotResponse(message) {
+    const lowerMessage = message.toLowerCase();
+    if (lowerMessage.includes('hola') || lowerMessage.includes('hi') || lowerMessage.includes('hello')) {
+        return '¡Hola! ¿En qué puedo ayudarte hoy?';
+    } else if (lowerMessage.includes('experiencia') || lowerMessage.includes('trabajos')) {
+        return 'Tengo más de 5 años de experiencia en marketing digital y consultoría creativa. ¿Te gustaría saber más sobre algún proyecto específico?';
+    } else if (lowerMessage.includes('habilidades') || lowerMessage.includes('skills')) {
+        return 'Mis principales habilidades incluyen el uso de Adobe Creative Suite, marketing digital, y una fuerte capacidad de innovación y trabajo en equipo. ¿Quieres más detalles sobre alguna habilidad en particular?';
+    } else if (lowerMessage.includes('contacto') || lowerMessage.includes('email')) {
+        return 'Puedes contactarme en fabriciokevin2016@hotmail.com o a través del botón "Contactarme" en mi CV interactivo.';
+    } else {
+        return 'Gracias por tu mensaje. Si tienes alguna pregunta específica sobre mi experiencia, habilidades o proyectos, no dudes en preguntar.';
+    }
+}
+});
+</script>
+</body>
+</html>
